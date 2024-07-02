@@ -131,58 +131,59 @@ export const FileUpload = () => {
         ],
     });
 
-    /**
+   /**
  * Function to copy transaction information to clipboard and return list of transaction objects.
  * @returns {Array<Object>} List of transaction objects.
  */
-    const copyTransactionText = () => {
-        const txns = transactionInfo.map((txn) => ({
-            id: `"${txn.id}"`,
-            external_identifier: txn.external_identifier ? 'nil' : `"${txn.external_identifier}"`,
-        }));
+const copyTransactionText = () => {
+    const txns = transactionInfo.map((txn) => ({
+        id: `"${txn.id}"`,
+        external_identifier: txn.external_identifier ? 'nil' : `"${txn.external_identifier}"`,
+    }));
 
-        const txnRepoCode = `
-  txn_repo = TransactionRepository.new
-  txns.each do |txn|
-    # Agregamos external identifier y cambiamos estado
-    txn_id = txn[:id]
-    txn_ei = txn[:external_identifier]
-    new_status = Transaction::TransactionStatuses::DECLINED
-    new_status_message = 'DECLINED-Manual'
-    TransactionRepository.new.update_monadic(txn_id,
-                                             { status: Transaction::TransactionStatuses::PENDING,
-                                               external_identifier: txn_ei })
-    # agregamos el external identifier al payment_method
-    t = txn_repo.find_by_id(txn_id).value!
-    payment_method = t.payment_method
-    extra = payment_method['extra'] || {}
-    new_payment_method = payment_method.merge('extra' => extra.merge({ 'external_identifier' => t.external_identifier }))
-    txn_repo.update_monadic(txn_id, payment_method: new_payment_method)
-    # encolamos la Transaction
-    FinalizeTransaction.enqueue(
-      txn_id,
-      new_status,
-      new_status_message,
-      Time.now
-    )
-  end
-  `;
+    const txnRepoCode = `
+txns = [
+${txns.map((txn) => (
+        `  {
+    id: ${txn.id},
+    external_identifier: ${txn.external_identifier}
+  }`
+    )).join(',\n\n')}
+];
 
-        const textToCopy = `txns = [\n${txns.map((txn) => (
-            `  {
-      id: ${txn.id},
-      external_identifier: ${txn.external_identifier}
-    }`
-        )).join(',\n\n')}\n];\n\n${txnRepoCode}`;
+txn_repo = TransactionRepository.new
+txns.each do |txn|
+  # Agregamos external identifier y cambiamos estado
+  txn_id = txn[:id]
+  txn_ei = txn[:external_identifier]
+  new_status = Transaction::TransactionStatuses::DECLINED
+  new_status_message = 'DECLINED-Manual'
+  TransactionRepository.new.update_monadic(txn_id,
+                                           { status: Transaction::TransactionStatuses::PENDING,
+                                             external_identifier: txn_ei })
+  # agregamos el external identifier al payment_method
+  t = txn_repo.find_by_id(txn_id).value!
+  payment_method = t.payment_method
+  extra = payment_method['extra'] || {}
+  new_payment_method = payment_method.merge('extra' => extra.merge({ 'external_identifier' => t.external_identifier }))
+  txn_repo.update_monadic(txn_id, payment_method: new_payment_method)
+  # encolamos la Transaction
+  FinalizeTransaction.enqueue(
+    txn_id,
+    new_status,
+    new_status_message,
+    Time.now
+  )
+end
+`;
 
-        // Replace multiple spaces with a single space for better formatting
-        const formattedText = textToCopy.replace(/^( {2})/gm, '  ');
+    const formattedText = txnRepoCode.replace(/^( {2})/gm, '  ');
 
-        navigator.clipboard.writeText(formattedText);
-        toast.info('Transaction information copied to clipboard');
+    navigator.clipboard.writeText(formattedText);
+    toast.info('Transaction information copied to clipboard');
 
-        return txns;
-    };
+    return txns;
+};
 
 
 
