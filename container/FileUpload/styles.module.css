@@ -1,0 +1,65 @@
+.dropzone {
+    border: 2px dashed #cccccc;
+    border-radius: 5px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: border 0.3s ease-in-out;
+  }
+  
+  .dropzone:hover {
+    border-color: #aaaaaa;
+  }
+  
+  .dropzone p {
+    margin: 0;
+    font-size: 16px;
+    color: #666666;
+  }
+  
+  .uploaded {
+    animation: pulse 1s infinite;
+  }
+  
+  @keyframes pulse {
+    0% {
+      box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.4);
+    }
+    70% {
+      box-shadow: 0 0 0 10px rgba(0, 123, 255, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(0, 123, 255, 0);
+    }
+  }
+  
+  .file-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+  }
+  
+  .file-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #cccccc;
+    border-radius: 5px;
+  }
+  
+  .file-list button {
+    background-color: #ff0000;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+  }
+  
+  .file-list button:hover {
+    background-color: #cc0000;
+  }
+  
