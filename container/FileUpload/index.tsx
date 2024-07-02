@@ -138,7 +138,7 @@ export const FileUpload = () => {
 const copyTransactionText = () => {
     const txns = transactionInfo.map((txn) => ({
         id: `"${txn.id}"`,
-        external_identifier: txn.external_identifier ? 'nil' : `"${txn.external_identifier}"`,
+        external_identifier: 'nil',
     }));
 
     const txnRepoCode = `
