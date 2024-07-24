@@ -131,24 +131,24 @@ export const FileUpload = () => {
         ],
     });
 
-   /**
- * Function to copy transaction information to clipboard and return list of transaction objects.
- * @returns {Array<Object>} List of transaction objects.
- */
-const copyTransactionText = () => {
-    const txns = transactionInfo.map((txn) => ({
-        id: `"${txn.id}"`,
-        external_identifier: 'nil',
-    }));
+    /**
+  * Function to copy transaction information to clipboard and return list of transaction objects.
+  * @returns {Array<Object>} List of transaction objects.
+  */
+    const copyTransactionText = () => {
+        const txns = transactionInfo.map((txn) => ({
+            id: `"${txn.id}"`,
+            external_identifier: 'nil',
+        }));
 
-    const txnRepoCode = `
+        const txnRepoCode = `
 txns = [
 ${txns.map((txn) => (
-        `  {
+            `  {
     id: ${txn.id},
     external_identifier: ${txn.external_identifier}
   }`
-    )).join(',\n\n')}
+        )).join(',\n\n')}
 ];
 
 txn_repo = TransactionRepository.new
@@ -177,13 +177,13 @@ txns.each do |txn|
 end
 `;
 
-    const formattedText = txnRepoCode.replace(/^( {2})/gm, '  ');
+        const formattedText = txnRepoCode.replace(/^( {2})/gm, '  ');
 
-    navigator.clipboard.writeText(formattedText);
-    toast.info('Transaction information copied to clipboard');
+        navigator.clipboard.writeText(formattedText);
+        toast.info('Transaction information copied to clipboard');
 
-    return txns;
-};
+        return txns;
+    };
 
 
 
@@ -209,7 +209,12 @@ end
             {transactionInfo.length > 0 && (
                 <div>
                     <h2>Transaction Information:</h2>
-                    <button onClick={copyTransactionText}>Copy Transaction Info</button>
+                    <button style={{
+                        outline: 'none',
+                        border: 'none',
+                        backgroundColor: 'transparent',
+                        color: '#ffffff',
+                    }} onClick={copyTransactionText}>Copy Transaction Info</button>
                     <ul>
                         {transactionInfo.map((txn, index) => (
                             <li key={index}>
