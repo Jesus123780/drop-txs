@@ -158,7 +158,7 @@ txns.each do |txn|
   txn_id = txn[:id]
   txn_ei = txn[:external_identifier]
   new_status = Transaction::TransactionStatuses::${selectedStatus}
-  new_status_message = 'DECLINED-Manual'
+  new_status_message = '${selectedStatus}-Manual'
   TransactionRepository.new.update_monadic(txn_id,
                                            { status: Transaction::TransactionStatuses::PENDING,
                                              external_identifier: txn_ei })
