@@ -12,7 +12,8 @@ import 'react-toastify/dist/ReactToastify.css';
 export const FileUpload = () => {
     const [uploadedFiles, setUploadedFiles] = useState<(File | Transaction)[]>([]);
     const [transactionInfo, setTransactionInfo] = useState<Transaction[]>([]);
-
+    const STATUS_OPTIONS = ['DECLINED', 'ERROR', 'APPROVED']
+    const [selectedStatus, setSelectedStatus] = useState('DECLINED')
     /**
      * Function to handle the processing of files dropped into the dropzone.
      * @param {Array<File>} acceptedFiles - Array of accepted files.
@@ -156,7 +157,7 @@ txns.each do |txn|
   # Agregamos external identifier y cambiamos estado
   txn_id = txn[:id]
   txn_ei = txn[:external_identifier]
-  new_status = Transaction::TransactionStatuses::DECLINED
+  new_status = Transaction::TransactionStatuses::${selectedStatus}
   new_status_message = 'DECLINED-Manual'
   TransactionRepository.new.update_monadic(txn_id,
                                            { status: Transaction::TransactionStatuses::PENDING,
@@ -186,10 +187,20 @@ end
     };
 
 
-
-
     return (
         <div>
+            <label htmlFor="status-select">Select Status:</label>
+            <select
+                id="status-select"
+                value={selectedStatus}
+                onChange={(e) => setSelectedStatus(e.target.value)}
+            >
+                {STATUS_OPTIONS.map((status) => (
+                    <option key={status} value={status}>
+                        {status}
+                    </option>
+                ))}
+            </select>
             <div
                 style={{ border: onOver ? '2px dashed #000' : '2px dashed #ccc' }}
                 {...getRootProps({ className: `${styles.dropzone} ${uploadedFiles.length > 0 ? styles.uploaded : ''}` })}
